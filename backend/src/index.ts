@@ -1,8 +1,10 @@
 import express, { Request, Response } from "express";
+import cors from "cors";
 import { PrismaClient } from "@prisma/client";
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 const prisma = new PrismaClient();
 
 app.get("/", (req: Request, res: Response) => {
@@ -19,8 +21,8 @@ app.post("/newtodo", async (req: Request, res: Response) => {
 });
 
 app.get("/todo", async (req: Request, res: Response) => {
-  const result = await prisma.todo.findFirst({});
-  res.send(result);
+  const result = await prisma.todo.findMany({});
+  res.json(result);
 });
 
 app.listen(3000, () => {
