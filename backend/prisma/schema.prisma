@@ -13,8 +13,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Todo{
+model User{
   id Int @id @default(autoincrement())
-  tittle String
-  completed Boolean @default(false)
+  email String
+  password String
+  username String @unique
+  task Task[]
+
 }
+
+model Task{
+  id Int @id @default(autoincrement())
+  title String
+  description String
+  dueDate String
+  priority String
+  reminder String
+  completed Boolean @default(false)
+  userId Int
+  user User @relation(fields: [userId], references: [id])
+}
+
