@@ -19,22 +19,42 @@ const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
 const prisma = new client_1.PrismaClient();
+// interface taskInput{
+//   title: string
+//   description?: string
+//   duedate?: string
+//   priority?: string
+//   reminder?: string
+//   userId: number
+// }
 app.get("/", (req, res) => {
     res.send("home");
 });
-app.post("/newtodo", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield prisma.todo.create({
+//create task
+app.post("/addtask", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const taskData = req.body;
+    const newTask = yield prisma.task.create({
         data: {
-            tittle: req.body.tittle,
+            title: taskData.title,
+            description: taskData.description,
+            dueDate: taskData.duedate,
+            priority: taskData.priority,
+            userId: taskData.id,
         },
     });
-    res.json(result);
+    console.log("new task added");
+    res.json(newTask);
 }));
-app.get("/todo", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield prisma.todo.findMany({});
-    res.json(result);
+//get tasks of users using userid
+app.get("/tasks/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.params.id;
+    const tasks = yield prisma.task.findMany({
+        where: {
+            userId: parseInt(userId, 10),
+        },
+    });
+    res.json(tasks);
 }));
 app.listen(3000, () => {
     console.log("running");
 });
-console.log("hi");

@@ -25,10 +25,10 @@ model User{
 model Task{
   id Int @id @default(autoincrement())
   title String
-  description String
-  dueDate String
-  priority String
-  reminder String
+  description String?
+  dueDate String?
+  priority String?
+  reminder String?
   completed Boolean @default(false)
   userId Int
   user User @relation(fields: [userId], references: [id])

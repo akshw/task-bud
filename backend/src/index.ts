@@ -7,25 +7,46 @@ app.use(express.json());
 app.use(cors());
 const prisma = new PrismaClient();
 
+// interface taskInput{
+//   title: string
+//   description?: string
+//   duedate?: string
+//   priority?: string
+//   reminder?: string
+//   userId: number
+// }
+
 app.get("/", (req: Request, res: Response) => {
   res.send("home");
 });
 
-app.post("/newtodo", async (req: Request, res: Response) => {
-  const result = await prisma.todo.create({
+//create task
+app.post("/addtask", async (req: Request, res: Response) => {
+  const taskData = req.body;
+  const newTask = await prisma.task.create({
     data: {
-      tittle: req.body.tittle,
+      title: taskData.title,
+      description: taskData.description,
+      dueDate: taskData.duedate,
+      priority: taskData.priority,
+      userId: taskData.id,
     },
   });
-  res.json(result);
+  console.log("new task added");
+  res.json(newTask);
 });
 
-app.get("/todo", async (req: Request, res: Response) => {
-  const result = await prisma.todo.findMany({});
-  res.json(result);
+//get tasks of users using userid
+app.get("/tasks/:id", async (req: Request, res: Response) => {
+  const userId = req.params.id;
+  const tasks = await prisma.task.findMany({
+    where: {
+      userId: parseInt(userId, 10),
+    },
+  });
+  res.json(tasks);
 });
 
 app.listen(3000, () => {
   console.log("running");
 });
-console.log("hi");
